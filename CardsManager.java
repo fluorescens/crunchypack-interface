@@ -19,6 +19,7 @@ public class CardsManager extends JFrame{
      public CardsManager() {
          //Initialize the empty jframe container and top level buttons. 
          cardPanel = new JPanel(); 
+         this.setTitle("Crunchypack Build 1.0");
          cards = new CardLayout(); 
          cardPanel.setLayout( cards );    
         
@@ -123,14 +124,12 @@ public class CardsManager extends JFrame{
             
             
             //ADD FRAMES TO CARD DECK
-            //Frame_1 jp1 = new Frame_1();
+            Frame_1 jp1 = new Frame_1();
             //Frame_2 jp2 = new Frame_2(); 
             //Frame_3 far_ref; 
-            //cardPanel.add(jp1, "1"); //panel, indeitifer
+            cardPanel.add(jp1, "1"); //panel, indeitifer
             //cardPanel.add(jp2, "2"); 
-        
-            
-            
+                                    
         //Cardmanager frame navigation buttons
         JButton button_exit = new JButton("Exit");
         button_exit.setFont(new Font("Courier", Font.PLAIN, 20));
