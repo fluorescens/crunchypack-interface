@@ -124,7 +124,7 @@ public class CardsManager extends JFrame{
             
             
             //ADD FRAMES TO CARD DECK
-            Frame_1 jp1 = new Frame_1();
+            Frame_1_r1 jp1 = new Frame_1_r1();
             //Frame_2 jp2 = new Frame_2(); 
             //Frame_3 far_ref; 
             cardPanel.add(jp1, "1"); //panel, indeitifer
@@ -196,6 +196,9 @@ public class CardsManager extends JFrame{
                         cards.show(cardPanel, Integer.toString(currentCard)); 
                       break; 
                   case 2:
+                      //need to query card 2 for a bunch of data. 
+                      //set the appropriate global functions. 
+                      //Incriment card if no error to 3, else error and keep at 2. 
                       break; 
                   case 3:
                       break; 
