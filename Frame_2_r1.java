@@ -192,7 +192,12 @@ public class Frame_2_r1 extends GFrame{
     }
     
     int get_number_of_groups() {
-        return Integer.parseInt(number_of_groups.getText()); 
+        if(CleanStencilUI.DEBUG_MODE == 1) {
+            return CardsManager.DEBUG_GROUP_COUNT; 
+        }
+        else {
+            return Integer.parseInt(number_of_groups.getText()); 
+        }
     }
     
     String get_name_of_pack() {

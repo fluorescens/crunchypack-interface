@@ -8,6 +8,8 @@ import java.io.FilenameFilter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.*; 
 
 /*
@@ -18,8 +20,10 @@ public class CardsManager extends JFrame{
      static private JPanel cardPanel; //the  holder for all the subpanels
      private int currentCard = 1; //the starting identifer
      private static CardLayout cards; //the one and only cards object
-     private final int DEBUG_GROUP_COUNT = 3; 
-     
+     public static final int DEBUG_GROUP_COUNT = 3; 
+     private static Frame_3_r1 refFrame3; 
+     private static ArrayList<Object> NAME_OF_GROUPS = new ArrayList<>();
+     private static int NUMBER_OF_GROUPS; 
      
      public CardsManager() {
          //Initialize the empty jframe container and top level buttons. 
@@ -204,7 +208,6 @@ public class CardsManager extends JFrame{
                     int proceed_counter = 0; 
                     String fpath; 
                     if(CleanStencilUI.DEBUG_MODE == 1) {
-                      proceed_counter = 3; 
                       fpath = "C:\\Users\\JamesH\\Documents\\NetBeansProjects\\CrunchyUI\\src\\crunchyui\\testfolder"; 
                       //C:\Users\JamesH\Documents\NetBeansProjects\CrunchyUI\src\crunchyui\testfolder
                     }
@@ -220,7 +223,8 @@ public class CardsManager extends JFrame{
  
                        String PACK_NAME; 
                        if(CleanStencilUI.DEBUG_MODE == 1) {
-                            PACK_NAME  = "samplepack";            
+                            PACK_NAME  = "samplepack";  
+                           ++proceed_counter; 
                        }
                         else {
                             String candidate_name = jp2.get_name_of_pack(); 
@@ -236,17 +240,16 @@ public class CardsManager extends JFrame{
                                         display_popup("File name error", filename_error);
                             }
                         }
-                  
-                        int number_of_groups;  
+                   
                         if(CleanStencilUI.DEBUG_MODE == 1) {
-                           number_of_groups = (DEBUG_GROUP_COUNT); 
+                           NUMBER_OF_GROUPS = (DEBUG_GROUP_COUNT); 
                         }
                         else {
-                           number_of_groups = jp2.get_number_of_groups();  
+                           NUMBER_OF_GROUPS = jp2.get_number_of_groups();  
                         }
 
-                        int validate_status = validate_groupn(number_of_groups, named.length);
-                        System.out.println(number_of_groups + " " + named.length);
+                        int validate_status = validate_groupn(NUMBER_OF_GROUPS, named.length);
+                        System.out.println(NUMBER_OF_GROUPS + " " + named.length);
                         if(validate_status != 0) {
                             display_inputError(validate_status); 
                         }
@@ -261,8 +264,14 @@ public class CardsManager extends JFrame{
                             ++proceed_counter; 
                          }
                         
+                        System.out.println("Counter : " + proceed_counter);
+                        
                         if(proceed_counter == 3) {
-                            System.out.println("Go to next" + proceed_counter);
+                            Frame_3_r1 jp3 = new Frame_3_r1(jp2.get_number_of_groups()); 
+                            cardPanel.add(jp3, "3");
+                            refFrame3 = jp3; 
+                            ++currentCard; 
+                            cards.show(cardPanel, Integer.toString(currentCard));
                         }
                         else {
                            System.out.println("No go to next" + proceed_counter);
@@ -271,13 +280,27 @@ public class CardsManager extends JFrame{
               else {
                    display_inputError(4); 
               }
-                    
-                      //need to query card 2 for a bunch of data. 
-                      //set the appropriate global functions. 
-                      //Incriment card if no error to 3, else error and keep at 2. 
                       break; 
-                  case 3:
+              case 3:
+                    int group_process = validate_group_table(refFrame3.getTable()); 
+                    if(group_process != -1) {
+                        //problem, returns the i of the issue. 
+                        String group_fail_error = "Error in assigning row " + group_process + ". Review assignment rules";
+                        display_popup("Group setup error", group_fail_error); 
+                    }
+                    else {
+                        build_group_table(refFrame3.getTable()); 
+                        //displayImageTable(); 
+                        Frame_4_r1 jp4 = new Frame_4_r1(); 
+                        cardPanel.add(jp4, "4");
+                        ++currentCard; 
+                        cards.show(cardPanel, Integer.toString(currentCard));
+                    }
                       break; 
+               case 4:
+                   //render the table frame. 
+
+                  break; 
               }
           }
         });
@@ -418,6 +441,58 @@ public class CardsManager extends JFrame{
     }
       
     
+    
+    
+    
+     private static int validate_group_table(JTable tdat) {
+      if(CleanStencilUI.DEBUG_MODE == 1) {
+          return -1; 
+      }
+      else {
+           HashMap<Object, Integer> hcheck = new HashMap<>(); 
+           int rowCount = tdat.getRowCount();
+           for(int i = 0; i < rowCount; ++i) {
+               Object cellValue = tdat.getModel().getValueAt(i, 1); 
+               if(cellValue == null || cellValue == "" || cellValue == " " || cellValue == "none") {
+                   return i; 
+               }
+               else {
+                   String cv = cellValue.toString();
+                   if(cv.isEmpty() == true) {
+                         return i; 
+                   }
+                   if(hcheck.containsKey(cv)) {
+                       return i; 
+                   }
+                   else {
+                       hcheck.put(cv, 0); 
+                   }
+               }
+           }
+           return -1; //-1, all OK. Any other number is returns the error. 
+      }
+  }
+    
+     
+     
+     
+      private static void build_group_table(JTable tdat) { 
+      //After validation, adds the group names, in order, to the group_names arraylist. 
+      //This list will be used to build drop-down options 
+      if(CleanStencilUI.DEBUG_MODE == 1) {
+            for(int i = 0; i < DEBUG_GROUP_COUNT; ++i) {
+              NAME_OF_GROUPS.add(Integer.toString(i)); 
+            }
+          NAME_OF_GROUPS.add("none"); //The last index is always the reserved keyword
+      }
+      else {
+            for(int i = 0; i < NUMBER_OF_GROUPS; ++i) {
+              Object cellValue = tdat.getModel().getValueAt(i, 1); 
+              NAME_OF_GROUPS.add(cellValue.toString()); 
+            }
+          NAME_OF_GROUPS.add("none"); //The last index is always the reserved keyword
+      }
+  }
     
      public void ui_teardown() {
          this.setVisible(false);
