@@ -1,16 +1,14 @@
-
+/*
+Frame 3 displays the group names table and contains the internal group table object
+*/
 package cleanstencilui;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
 import java.awt.*; 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,35 +21,35 @@ import javax.swing.*;
  */
 
 public class Frame_3_r1 extends GFrame {
-    private JTable table_frame3; 
+    private JTable table_frame3; //the internal table object that holds group names
     public Frame_3_r1(final int number_of_groups) {
-        JLabel local_title = new JLabel("Assign images to Group");
+        JLabel local_title = new JLabel("Choose Group Names");
         local_title.setFont(new Font("Courier",1, 30));
         local_title.setForeground(Color.WHITE);
-        JPanel v_panel_1 = new JPanel();
-        GridBagConstraints v1 = new GridBagConstraints(); //container holding gridbag components
-        v_panel_1.setBackground(Color.BLUE);
-        v1.anchor = GridBagConstraints.NORTH;
-        v1.fill = GridBagConstraints.HORIZONTAL; 
-        v1.weighty = 0.5; 
-        v1.gridwidth = 10; 
-        v1.gridheight = 1; 
-        v1.ipady = 10; 
-        v1.gridx = 0; 
-        v1.gridy = 1; 
-        v_panel_1.add(local_title); 
-	this.add(v_panel_1, v1);
+        JPanel title_panel = new JPanel();
+        GridBagConstraints gbag_constrain_title = new GridBagConstraints(); //container holding gridbag components
+        title_panel.setBackground(Color.BLUE);
+        gbag_constrain_title.anchor = GridBagConstraints.NORTH;
+        gbag_constrain_title.fill = GridBagConstraints.HORIZONTAL; 
+        gbag_constrain_title.weighty = 0.5; 
+        gbag_constrain_title.gridwidth = 10; 
+        gbag_constrain_title.gridheight = 1; 
+        gbag_constrain_title.ipady = 10; 
+        gbag_constrain_title.gridx = 0; 
+        gbag_constrain_title.gridy = 1; 
+        title_panel.add(local_title); 
+	this.add(title_panel, gbag_constrain_title);
         
         
         final String[] columnNames = {"Group  #", "Group name"};
      
-        Object[][] data2 = new Object[number_of_groups][2];   
+        Object[][] table_group_data = new Object[number_of_groups][2];   
         for(int i = 0; i < number_of_groups; ++i) {
-            data2[i][0] = i; 
+            table_group_data[i][0] = i; 
         }
         
         
-    JTable gtable = new JTable(data2, columnNames)
+    JTable group_table = new JTable(table_group_data, columnNames)
     {
            @Override 
            public boolean isCellEditable(int row, int column) 
@@ -64,58 +62,58 @@ public class Frame_3_r1 extends GFrame {
                 }
            }
     }; 
-    gtable.putClientProperty("terminateEditOnFocusLost", true);
-    gtable.setPreferredScrollableViewportSize(new Dimension(700, 270));
-    gtable.setFillsViewportHeight(true);
-    gtable.setRowHeight(30);
-    gtable.getColumnModel().getColumn(0).setPreferredWidth(150);
-    gtable.getColumnModel().getColumn(1).setPreferredWidth(1000);
-    gtable.setFont(new Font("Courier", Font.PLAIN, 20));
-    gtable.setBackground(Color.WHITE);
+    group_table.putClientProperty("terminateEditOnFocusLost", true);
+    group_table.setPreferredScrollableViewportSize(new Dimension(900, 270));
+    group_table.setFillsViewportHeight(true);
+    group_table.setRowHeight(30);
+    group_table.getColumnModel().getColumn(0).setPreferredWidth(150);
+    group_table.getColumnModel().getColumn(1).setPreferredWidth(1000);
+    group_table.setFont(new Font("Courier", Font.PLAIN, 20));
+    group_table.setBackground(Color.WHITE);
     
-    JScrollPane scrolln = new JScrollPane(gtable);
-    scrolln.setViewportView(gtable);
-    scrolln.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-    table_frame3 = gtable; 
+    JScrollPane table_group_scrollpane = new JScrollPane(group_table);
+    table_group_scrollpane.setViewportView(group_table);
+    table_group_scrollpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    table_frame3 = group_table; 
     
-        JPanel v_panel_8 = new JPanel();
-    v_panel_8.add(scrolln); 
-    v_panel_8.setBackground(Color.RED);
-    GridBagConstraints v8 = new GridBagConstraints(); //container holding gridbag components
-    v8.anchor = GridBagConstraints.SOUTH; 
-    v8.fill = GridBagConstraints.BOTH; 
-    v8.gridwidth = 4; 
-    v8.gridheight = 5; 
-    v8.weighty = 0.1; 
-    v8.gridx = 3; 
-    v8.gridy = 2; 
-    this.add(v_panel_8, v8);
+        JPanel panel_group_table = new JPanel();
+    panel_group_table.add(table_group_scrollpane); 
+    panel_group_table.setBackground(Color.GRAY);
+    GridBagConstraints gbag_constrain_group_table = new GridBagConstraints(); //container holding gridbag components
+    gbag_constrain_group_table.anchor = GridBagConstraints.NORTH; 
+    gbag_constrain_group_table.fill = GridBagConstraints.VERTICAL; 
+    gbag_constrain_group_table.gridwidth = 5; 
+    gbag_constrain_group_table.gridheight = 7; 
+    gbag_constrain_group_table.weighty = 0.9; 
+    gbag_constrain_group_table.gridx = 3; 
+    gbag_constrain_group_table.gridy = 2; 
+    this.add(panel_group_table, gbag_constrain_group_table);
     
     
     JButton group_rules_help = new JButton("Rules: Assigning group names"); 
                 group_rules_help.setFont(new Font("Courier",1, 16));
-        GridBagConstraints giws = new GridBagConstraints(); //container holding gridbag components
+        GridBagConstraints gbag_constrain_group_rules = new GridBagConstraints(); //container holding gridbag components
         group_rules_help.setBackground(Color.WHITE); 
-        giws.anchor = GridBagConstraints.NORTH;
-        giws.weighty = 0.5; 
-        giws.gridwidth = 2; 
-        giws.gridheight = 1; 
-        giws.gridx = 4; 
-        giws.gridy = 7; 
-	this.add(group_rules_help, giws);
+        gbag_constrain_group_rules.anchor = GridBagConstraints.NORTHWEST;
+        gbag_constrain_group_rules.weighty = 0.5; 
+        gbag_constrain_group_rules.gridwidth = 2; 
+        gbag_constrain_group_rules.gridheight = 1; 
+        gbag_constrain_group_rules.gridx = 7; 
+        gbag_constrain_group_rules.gridy = 9; 
+	this.add(group_rules_help, gbag_constrain_group_rules);
         group_rules_help.addActionListener(new ActionListener() //exit
         {
           public void actionPerformed(ActionEvent e)
           {
-              final String p_title = "Assigning group names."; 
-              final String p_message = "A few rules about naming groups: \n \n"
+              final String title_group_help = "Assigning group names."; 
+              final String text_group_help = "A few rules about naming groups: \n \n"
                       + "A group name can be something simple like: "
                       + "black_rock, enemy car, a, 1, or a12# \n"
                       + "A good name should be related to all the images in the group. \n"
                       + "'black_helicopter' is the group that holds all our images of black helicopters. \n"
                       + "Group names must be unique. There cannot be two 'black_rock' groups, but there can be a 'black_rock1'. \n \n"
                       + "'none' CANNOT be used as a group name. It is a program reserved word."; 
-              display_popup(p_title, p_message); 
+              display_popup(title_group_help, text_group_help); 
           }
     });
         
@@ -126,6 +124,7 @@ public class Frame_3_r1 extends GFrame {
     }
     
     public JTable getTable() {
+        //return Frame 3's internal table object of group names
         return table_frame3; 
     }
 }
