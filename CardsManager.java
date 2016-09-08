@@ -1,10 +1,18 @@
-
+/*
+"Master" frame using a cardlayout style layout defining a single view and always-visible controls 
+for top level navigation that control which subframe is displayed. 
+Global controls include three buttons: an exit, website launcher, and "next" that advances the frame. 
+All frames are subclasses of GFrame which defines the generic gridbag layout of each frame. 
+*/
 package cleanstencilui;
 import java.awt.*; 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,10 +28,15 @@ public class CardsManager extends JFrame{
      static private JPanel cardPanel; //the  holder for all the subpanels
      private int currentCard = 1; //the starting identifer
      private static CardLayout cards; //the one and only cards object
-     public static final int DEBUG_GROUP_COUNT = 3; 
-     private static Frame_3_r1 refFrame3; 
-     private static ArrayList<Object> NAME_OF_GROUPS = new ArrayList<>();
-     private static int NUMBER_OF_GROUPS; 
+     public static final int DEBUG_GROUP_COUNT = 3; //Test value for debugging mode
+     private static Frame_3_r1 refFrame3; //refrence to the created on-the-fly frame 3 object
+     private static Frame_4_r1 refFrame4; //refrence to the created on-the-fly frame 4 object
+     private static ArrayList<Object> NAME_OF_GROUPS = new ArrayList<>(); //the names of all the user-defined groups
+     private static String[] NAMES_OF_IMAGES; //the names of all the discovered files
+     public int NUMBER_OF_GROUPS; //numer of user defined groups
+     public int NUMBER_OF_IMAGES; //number of user defined images
+     private String PATH_TO_IMG_FOLDER; //the absolute full path from root to image folder
+     private String PACK_NAME; //the user defined name of the crunchypack. 
      
      public CardsManager() {
          //Initialize the empty jframe container and top level buttons. 
@@ -132,12 +145,11 @@ public class CardsManager extends JFrame{
             
             
             
-            //ADD FRAMES TO CARD DECK
-            Frame_1_r1 jp1 = new Frame_1_r1();
-            Frame_2_r1 jp2 = new Frame_2_r1(); 
-            //Frame_3 far_ref; 
-            cardPanel.add(jp1, "1"); //panel, indeitifer
-            cardPanel.add(jp2, "2"); 
+        //Add basic frames to deck
+        Frame_1_r1 GFrame_Frame_1 = new Frame_1_r1();
+        Frame_2_r1 GFrame_Frame_2 = new Frame_2_r1(); 
+        cardPanel.add(GFrame_Frame_1, "1"); //panel, identifier
+        cardPanel.add(GFrame_Frame_2, "2"); 
                                     
         //Cardmanager frame navigation buttons
         JButton button_exit = new JButton("Exit");
@@ -191,7 +203,11 @@ public class CardsManager extends JFrame{
             panel_buttons.add(button_sitelaunch, gbag_constrain_sitelaunch);
             
             
-
+    
+        /*
+        Next button validates current frame data and advances if correct. 
+        If incorrect, prporgram launches a popup with the approriate case matching error message. 
+        */
         JButton button_next = new JButton("Next >");
                 button_next.setFont(new Font("Courier", Font.PLAIN, 20));
         button_next.addActionListener(new ActionListener()
@@ -212,22 +228,22 @@ public class CardsManager extends JFrame{
                       //C:\Users\JamesH\Documents\NetBeansProjects\CrunchyUI\src\crunchyui\testfolder
                     }
                      else {
-                      fpath = jp2.get_path_to_images(); 
+                      fpath = GFrame_Frame_2.get_path_to_images(); 
                     }
                     Path path = Paths.get(fpath);
-                    if(Files.exists(path)) {
+                    if(Files.exists(path) && !fpath.isEmpty()) {
                        Path IMGFOLDER = path; 
-                       String[] named = imgnames(fpath); 
-                       int NUMBER_OF_IMAGES = named.length;  
+                       NAMES_OF_IMAGES = imgnames(fpath);
+                       PATH_TO_IMG_FOLDER = fpath; 
+                       NUMBER_OF_IMAGES = NAMES_OF_IMAGES.length;  
                        ++proceed_counter; 
  
-                       String PACK_NAME; 
                        if(CleanStencilUI.DEBUG_MODE == 1) {
                             PACK_NAME  = "samplepack";  
                            ++proceed_counter; 
                        }
                         else {
-                            String candidate_name = jp2.get_name_of_pack(); 
+                            String candidate_name = GFrame_Frame_2.get_name_of_pack(); 
                             int test_name = sanitize_filename(candidate_name); 
                             if(test_name == 0) {
                                 PACK_NAME =  candidate_name;
@@ -245,11 +261,11 @@ public class CardsManager extends JFrame{
                            NUMBER_OF_GROUPS = (DEBUG_GROUP_COUNT); 
                         }
                         else {
-                           NUMBER_OF_GROUPS = jp2.get_number_of_groups();  
+                           NUMBER_OF_GROUPS = GFrame_Frame_2.get_number_of_groups();  
                         }
 
-                        int validate_status = validate_groupn(NUMBER_OF_GROUPS, named.length);
-                        System.out.println(NUMBER_OF_GROUPS + " " + named.length);
+                        int validate_status = validate_groupn(NUMBER_OF_GROUPS, NAMES_OF_IMAGES .length);
+                        System.out.println(NUMBER_OF_GROUPS + " " + NAMES_OF_IMAGES.length);
                         if(validate_status != 0) {
                             display_inputError(validate_status); 
                         }
@@ -264,10 +280,9 @@ public class CardsManager extends JFrame{
                             ++proceed_counter; 
                          }
                         
-                        System.out.println("Counter : " + proceed_counter);
                         
                         if(proceed_counter == 3) {
-                            Frame_3_r1 jp3 = new Frame_3_r1(jp2.get_number_of_groups()); 
+                            Frame_3_r1 jp3 = new Frame_3_r1(GFrame_Frame_2.get_number_of_groups()); 
                             cardPanel.add(jp3, "3");
                             refFrame3 = jp3; 
                             ++currentCard; 
@@ -277,9 +292,9 @@ public class CardsManager extends JFrame{
                            System.out.println("No go to next" + proceed_counter);
                         }
                     }
-              else {
-                   display_inputError(4); 
-              }
+                    else {
+                         display_inputError(4); 
+                    }
                       break; 
               case 3:
                     int group_process = validate_group_table(refFrame3.getTable()); 
@@ -290,20 +305,34 @@ public class CardsManager extends JFrame{
                     }
                     else {
                         build_group_table(refFrame3.getTable()); 
-                        //displayImageTable(); 
-                        Frame_4_r1 jp4 = new Frame_4_r1(); 
+                        Frame_4_r1 jp4 = new Frame_4_r1(NAME_OF_GROUPS, NUMBER_OF_IMAGES, NAMES_OF_IMAGES); 
+                        refFrame4 = jp4; 
                         cardPanel.add(jp4, "4");
                         ++currentCard; 
                         cards.show(cardPanel, Integer.toString(currentCard));
                     }
                       break; 
                case 4:
-                   //render the table frame. 
-
+                    int combo_add = validate_ComboTable(refFrame4.getComboTableObject()); 
+                    if(combo_add != -1) {
+                        String error_validate_COmboTable = "Error in row " + combo_add; 
+                        String error_validate_COmboTable_row = "Row " + combo_add + " contains an invalid value. \n"
+                                + "New image names cannot be empty, duplicates, a single space, or none."; 
+                        display_popup(error_validate_COmboTable, error_validate_COmboTable_row); 
+                    }
+                    else {
+                        //prepare a final package of the data for the IMGReduce algorithm program to use. 
+                        Object[][] finalized_data =  build_ComboTable(refFrame4.getComboTableObject()); 
+                        data_pkg(finalized_data); 
+                        cardPanel.setVisible(false);
+                        //shut the program down. Pack build was successful. 
+                        System.exit(0);
+                    }
                   break; 
               }
           }
         });
+            //add buttons to top-level cardmanager frame
             GridBagConstraints gbag_constrain_next = new GridBagConstraints(); //container holding gridbag components
             gbag_constrain_next.anchor = GridBagConstraints.EAST;
             gbag_constrain_next.fill = GridBagConstraints.HORIZONTAL; 
@@ -316,7 +345,7 @@ public class CardsManager extends JFrame{
             gbag_constrain_next.gridy = 1; 
             panel_buttons.add(button_next, gbag_constrain_next);
 
-            //the empty display panel object
+            //the empty display panel object that shows subframes
             JPanel panel_filler = new JPanel();
             panel_filler.setBackground(Color.GREEN);
             gbag_constraint_h1.anchor = GridBagConstraints.NORTH;
@@ -334,25 +363,9 @@ public class CardsManager extends JFrame{
      }
      
      
-     private void optionpane_error(String error_msg) {
-         //Popup that displays its argument as an error message in a popup window
-        final String p_title = "An error occured:"; 
-              
-        Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 20);
-        UIManager.put("OptionPane.messageFont", font); //sets the size of popup fonts. 
-        JFrame popup_parent = new JFrame(); 
-        JOptionPane jpop = new JOptionPane(); 
-        jpop.showOptionDialog(
-            popup_parent, error_msg, p_title, JOptionPane.DEFAULT_OPTION,
-            JOptionPane.ERROR_MESSAGE, null, null, null
-            );
-        popup_parent.setVisible(false);
-        popup_parent.dispose();
-     }
-     
-     
-     
-      protected void display_popup(String title, String message) {
+
+      private void display_popup(String title, String message) {
+      //Displays popup messages with a title. 
       Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 20);
       UIManager.put("OptionPane.messageFont", font); //sets the size of popup fonts. 
       JFrame popup_parent = new JFrame(); 
@@ -365,7 +378,8 @@ public class CardsManager extends JFrame{
       popup_parent.dispose();
   }
      
-    private static String[] imgnames(String imgpath) {
+    private String[] imgnames(String imgpath) {
+      //parses the provided PATH_TO_IMG_FOLDER location and adds files with a .bmp extension to the file collection.
       File fsource = new File(imgpath); 
       FilenameFilter textFilter = new FilenameFilter() {
         @Override
@@ -382,7 +396,9 @@ public class CardsManager extends JFrame{
       return bmpfiles; 
     }
     
-   private static int sanitize_filename(String test) {
+   private int sanitize_filename(String test) {
+      //checks that the user-enetred filename is not an empty string or other illegal character
+      //Disallow values that would make the file difficult for IMGReduce to fine. 
       if( (test.equals(" ")) || (test.equals("\n")) || (test.isEmpty() == true)) {
           return - 1; 
       }
@@ -393,6 +409,10 @@ public class CardsManager extends JFrame{
    
     private void display_inputError(int error_code) 
   {
+      /*
+      When various input functions fail and return an error code, this function takes the error code and 
+      generates a popup message with information to help resolve the problem. 
+      */
       switch(error_code) {
           case 1:  //The number of items is not an integer
               final String bad_1 = "Number of items must be an integer from 1 to 999"; 
@@ -407,11 +427,13 @@ public class CardsManager extends JFrame{
               display_popup("Input error", bad_3);
               break; 
           case 4:
+              //The PATH_TO_IMG_FOLDER could not be resolved
               final String bad_4 = "Your filepath could not be found. Re-check the input. \n"
                       + "Common error sources include misspellings or added spaces."; 
               display_popup("Filepath error", bad_4); 
               break; 
           case 5: 
+              //The location at PATH_TO_IMG_FOLDER contains items without a .bmp extension
               final String bad_5 = "Your filepath contains non-bitmap files. \n "
                       + "ALL images need to be 256-bitmap files. Review \"What are images\" to see how to convert image formats.";
               display_popup("Non .bmp files in folder", bad_5); 
@@ -426,6 +448,7 @@ public class CardsManager extends JFrame{
    
     private static int validate_groupn(int validate, int images) 
     {
+      //Validate that numbers for groups aren't excessivly large or negative. 
       if(validate < 0) {
           return 2; 
       }
@@ -445,6 +468,9 @@ public class CardsManager extends JFrame{
     
     
      private static int validate_group_table(JTable tdat) {
+      /*
+      Validates that every group name is unique and actually has an identifiable name. 
+      */
       if(CleanStencilUI.DEBUG_MODE == 1) {
           return -1; 
       }
@@ -476,7 +502,7 @@ public class CardsManager extends JFrame{
      
      
      
-      private static void build_group_table(JTable tdat) { 
+  private void build_group_table(JTable tdat) { 
       //After validation, adds the group names, in order, to the group_names arraylist. 
       //This list will be used to build drop-down options 
       if(CleanStencilUI.DEBUG_MODE == 1) {
@@ -494,7 +520,121 @@ public class CardsManager extends JFrame{
       }
   }
     
+      
+   private int validate_ComboTable(ComboTable tdat) {
+      /*
+      Validates that the alias names for images are unique, and not reserved words, empty or whitespace. 
+      */
+      if(CleanStencilUI.DEBUG_MODE == 1) {
+          for(int i = 0; i < NUMBER_OF_IMAGES; ++i) {
+              Object cellValue = tdat.retrieve_table_value(i, 1);
+              refFrame4.getAliasOfImage().add(i, cellValue);
+          }
+          return -1; 
+      }
+      else {
+           HashMap<Object, Integer> hcheck = new HashMap<>(); 
+           int rowCount = NUMBER_OF_IMAGES; 
+           for(int i = 0; i < rowCount; ++i) {
+               Object cellValue = tdat.retrieve_table_value(i, 1); 
+               if(cellValue == null || cellValue == "" || cellValue == " " || cellValue == "none") {
+                   refFrame4.getAliasOfImage().clear();
+                   return i; 
+               }
+               else {
+                   String cv = cellValue.toString();
+                   if(cv.isEmpty() == true) {
+                         refFrame4.getAliasOfImage().clear();
+                         return i; 
+                   }
+                   if(hcheck.containsKey(cv)) {
+                       refFrame4.getAliasOfImage().clear();
+                       return i; 
+                   }
+                   else {
+                       hcheck.put(cv, 0); 
+                       refFrame4.getAliasOfImage().add(i, cellValue);
+                   }
+               }
+           }
+           return -1; //-1, all OK. Any other number is returns the error. 
+      }
+  }
+      
+      
+      
+      
+  private Object[][] build_ComboTable(ComboTable ComboTable_data) {
+      //Copies the data from Frame 4 image table into a 2-D Object array
+      Object[][] finalized = new Object[NUMBER_OF_IMAGES][3];
+      for(int i = 0; i < NUMBER_OF_IMAGES; ++i) {
+               for(int k = 0; k < 3; ++k) {
+                    Object valueAt = ComboTable_data.retrieve_table_value(i, k);
+                    finalized[i][k] = valueAt; 
+                    System.out.println(valueAt);
+                }
+      }      
+      return finalized; 
+  }
+      
+      
+      
+   private void data_pkg(Object[][] finalized_data) {
+      //Packages PATH_TO_IMG_FOLDER, groups number, images names, pack name, and group identification to a text file
+      //text file will be passed to IMGReduce, which will generate the BGR-Reduced table for the image set
+      String localpath = PATH_TO_IMG_FOLDER; 
+      if(localpath.charAt(localpath.length() - 1) != '\\' ) {
+          localpath += '\\'; 
+      }
+      else {
+          
+      }
+      System.out.println(NAME_OF_GROUPS.size() + " " + NUMBER_OF_IMAGES + " " + refFrame4.getAliasOfImage().size() ); 
+      
+      String selectname = System.lineSeparator() + PACK_NAME; 
+      
+      String final_data_write = localpath + selectname + System.lineSeparator(); 
+      for(int i = 0; i < NAME_OF_GROUPS.size(); ++i) {
+          final_data_write += NAME_OF_GROUPS.get(i) + ","; 
+      }
+      final_data_write += System.lineSeparator(); 
+      for(int i = 0; i < NUMBER_OF_IMAGES; ++i) {
+          final_data_write += NAMES_OF_IMAGES[i] + ","; 
+          if(refFrame4.getAliasOfImage().get(i) == null) {
+              final_data_write += " ,"; 
+              
+          }
+          else {
+              final_data_write += refFrame4.getAliasOfImage().get(i) + ","; 
+          }
+          int match = 0; 
+          for(int b = 0; b < NAME_OF_GROUPS.size(); ++b) {
+               if(NAME_OF_GROUPS.get(b) == finalized_data[i][2].toString()) {
+                  final_data_write += Integer.toString(b) + "," + System.lineSeparator();
+                  break; 
+               }
+               else {
+                   
+               }
+          } 
+      }
+
+        try {
+            File file = new  File("cpack_fpath_condense_" + PACK_NAME + ".txt");
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(final_data_write);
+            bw.close();
+        } catch (IOException e) {
+            //An unexpected, unmanagable error occured when trying to create the file. 
+            //e.printStackTrace();
+        }
+  }
+      
+      
+      
      public void ui_teardown() {
+         //Debug utility for frame visibility control. 
          this.setVisible(false);
      }
 }
