@@ -53,6 +53,7 @@ public class Frame_2_r1 extends GFrame{
         gbag_constrain_file_label.anchor = GridBagConstraints.SOUTH;
         gbag_constrain_file_label.fill = GridBagConstraints.HORIZONTAL; 
         gbag_constrain_file_label.weighty = 0.5; 
+        gbag_constrain_file_label.weightx = 0.5; 
         gbag_constrain_file_label.gridwidth = 2; 
         gbag_constrain_file_label.gridheight = 1; 
         gbag_constrain_file_label.ipady = 10; 
@@ -69,6 +70,7 @@ public class Frame_2_r1 extends GFrame{
         gbag_constrain_images .anchor = GridBagConstraints.SOUTHWEST;
         gbag_constrain_images .fill = GridBagConstraints.HORIZONTAL; 
         gbag_constrain_images .weighty = 0.5; 
+        gbag_constrain_images .weightx = 0.5;
         gbag_constrain_images .gridwidth = 6; 
         gbag_constrain_images .gridheight = 1; 
         gbag_constrain_images .gridx = 2; 
@@ -83,6 +85,7 @@ public class Frame_2_r1 extends GFrame{
         GridBagConstraints gbag_constrain_filepath = new GridBagConstraints(); //container holding gridbag components
         gbag_constrain_filepath.anchor = GridBagConstraints.NORTHWEST;
         gbag_constrain_filepath.weighty = 0.5; 
+        gbag_constrain_filepath.weightx = 0.5;
         gbag_constrain_filepath.gridwidth = 2; 
         gbag_constrain_filepath.gridheight = 1; 
         gbag_constrain_filepath.gridx = 2; 
@@ -95,9 +98,9 @@ public class Frame_2_r1 extends GFrame{
               final String title_about_filepaths = "About paths and images"; 
               final String text_about_filepaths = "The filepath is the path to a folder that holds the images. \n"
                       +"Example: C:\\Users\\Kevin\\Screenshots\\ChessImg where folder ChessImg holds all the images we plan to use. \n"
-                      + "Images MUST be in 256-bitmap format. To make an image a 256-bitmap, "
+                      + "Images MUST be in 24-bitmap format. To make an image a 24-bitmap, "
                       + "open the image file in an editing program like Paint and click: \n"
-                      + "File -> Save As -> and under Save as type, choose \"256 Color bitmap\" ";  
+                      + "File -> Save As -> and under Save as type, choose \"24 Color bitmap\" ";  
               display_popup(title_about_filepaths, text_about_filepaths); 
           }
         });
@@ -123,6 +126,7 @@ public class Frame_2_r1 extends GFrame{
         gbag_constrain_name .anchor = GridBagConstraints.CENTER;
         gbag_constrain_name .fill = GridBagConstraints.HORIZONTAL; 
         gbag_constrain_name .weighty = 0.5; 
+        gbag_constrain_name .weightx = 0.5;
         gbag_constrain_name .gridwidth = 6; 
         gbag_constrain_name .gridheight = 1; 
         gbag_constrain_name .gridx = 2; 
