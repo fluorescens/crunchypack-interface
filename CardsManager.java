@@ -152,7 +152,7 @@ public class CardsManager extends JFrame{
         cardPanel.add(GFrame_Frame_2, "2"); 
                                     
         //Cardmanager frame navigation buttons
-        JButton button_exit = new JButton("Exit");
+        JButton button_exit = new JButton("Back");
         button_exit.setFont(new Font("Courier", Font.PLAIN, 20));
         button_exit.addActionListener(new ActionListener()
         {
@@ -180,7 +180,7 @@ public class CardsManager extends JFrame{
             gabg_constraint_exit.gridy = 1; 
             panel_buttons.add(button_exit, gabg_constraint_exit);
             
-        JButton button_sitelaunch = new JButton("Visit the Site"); 
+        JButton button_sitelaunch = new JButton("To the Repo"); 
                 button_sitelaunch.setFont(new Font("Coutier", Font.PLAIN, 20));
          button_sitelaunch.addActionListener(new ActionListener()
         {
@@ -270,11 +270,11 @@ public class CardsManager extends JFrame{
                             display_inputError(validate_status); 
                         }
                         else {
-                             String final_confirm = "Double check that all images are 256 bitmaps. \n"
-                             + "This is not indicating an error, but is just a reminder that non-256 bitmaps can create bad data. \n"
-                             + "There are different types of bitmap (.bmp) formats and only 256 bitmaps should be used. \n"
-                             + "To check if a file is a 256 bitmap, right click the image, click properties and under the details tab check bit depth. \n"
-                             + "This value should be 8; a 4 or 24 are the wrong formats (16 and 24 bitmap). Resave the file in the correct format. \n"
+                             String final_confirm = "Double check that all images are 24 bitmaps. \n"
+                             + "This is not indicating an error, but is just a reminder that non-24 bitmaps can create bad data. \n"
+                             + "There are different types of bitmap (.bmp) formats and only 24 bitmaps should be used. \n"
+                             + "To check if a file is a 24 bitmap, right click the image, click properties and under the details tab check bit depth. \n"
+                             + "This value should be 24; 8 and 16 are the wrong formats. Resave the file in the correct format. \n"
                              + "If you sure are the images are in the correct format, proceed with Crunchypack creation.";
                             display_popup("Double check bitmap formats", final_confirm);
                             ++proceed_counter; 
@@ -435,7 +435,7 @@ public class CardsManager extends JFrame{
           case 5: 
               //The location at PATH_TO_IMG_FOLDER contains items without a .bmp extension
               final String bad_5 = "Your filepath contains non-bitmap files. \n "
-                      + "ALL images need to be 256-bitmap files. Review \"What are images\" to see how to convert image formats.";
+                      + "ALL images need to be 24-bitmap files. Review \"What are images\" to see how to convert image formats.";
               display_popup("Non .bmp files in folder", bad_5); 
               break; 
           default:
