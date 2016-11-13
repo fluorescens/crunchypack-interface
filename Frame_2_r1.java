@@ -122,6 +122,8 @@ public class Frame_2_r1 extends GFrame{
         JTextArea name_item = new JTextArea(); 
                   name_item.setFont(new Font("Courier",1, 16));
                   name_item.setForeground(Color.BLACK);
+        JScrollPane nameimg = new JScrollPane(name_item);
+        nameimg.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         GridBagConstraints gbag_constrain_name = new GridBagConstraints(); //container holding gridbag components
         gbag_constrain_name .anchor = GridBagConstraints.CENTER;
         gbag_constrain_name .fill = GridBagConstraints.HORIZONTAL; 
@@ -132,7 +134,7 @@ public class Frame_2_r1 extends GFrame{
         gbag_constrain_name .gridx = 2; 
         gbag_constrain_name .gridy = 3; 
         name_of_crunchypack = name_item; 
-	this.add(name_item, gbag_constrain_name);
+	this.add(nameimg, gbag_constrain_name);
         
         
         JLabel label_group = new JLabel("Number of groups:");  

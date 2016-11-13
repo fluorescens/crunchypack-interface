@@ -76,18 +76,17 @@ public class Frame_3_r1 extends GFrame {
     table_group_scrollpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     table_frame3 = group_table; 
     
-        JPanel panel_group_table = new JPanel();
-    panel_group_table.add(table_group_scrollpane); 
-    panel_group_table.setBackground(Color.GRAY);
     GridBagConstraints gbag_constrain_group_table = new GridBagConstraints(); //container holding gridbag components
     gbag_constrain_group_table.anchor = GridBagConstraints.NORTH; 
     gbag_constrain_group_table.fill = GridBagConstraints.VERTICAL; 
+    gbag_constrain_group_table.fill = GridBagConstraints.HORIZONTAL;
     gbag_constrain_group_table.gridwidth = 5; 
     gbag_constrain_group_table.gridheight = 7; 
     gbag_constrain_group_table.weighty = 0.9; 
+    gbag_constrain_group_table.weightx = 0.9;
     gbag_constrain_group_table.gridx = 3; 
     gbag_constrain_group_table.gridy = 2; 
-    this.add(panel_group_table, gbag_constrain_group_table);
+    this.add(table_group_scrollpane, gbag_constrain_group_table);
     
     
     JButton group_rules_help = new JButton("Rules: Assigning group names"); 
