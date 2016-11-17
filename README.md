@@ -12,4 +12,4 @@
  This code will compile on any machine running the Java version 8 compiler. We reccomend the latest free Netbeans IDE from Oracle which this project and all its java components are build. For testing, we use the built-in JUnit framework. 
  
 # Changes and Contributions:
-  Send changes as raw source code with edit line numbers at the top of the file to the project lead; james@leppek.us
+  Send changes as raw source code with edit line numbers at the top of the file to the project lead; jamesl@leppek.us 
